@@ -4,6 +4,7 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 using Microsoft.ML.OnnxRuntime;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.ML.Trainers;
 
 // データクラスの定義
 public class ModelInput
