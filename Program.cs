@@ -5,6 +5,8 @@ using Microsoft.ML.OnnxRuntime;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.ML.Trainers;
+using Microsoft.ML.Trainers.LightGbm;
+using System.ComponentModel.DataAnnotations;
 
 // データクラスの定義
 public class ModelInput
@@ -84,11 +86,21 @@ class Program
             return;
         }
 
+        var options = new LightGbmMulticlassTrainer.Options
+        {
+            LabelColumnName = "Label", // ラベル列の指定
+            FeatureColumnName = "Features", // 特徴量列の指定
+            NumberOfLeaves = 31, // num_leaves の設定
+            MinimumExampleCountPerLeaf = 5, // 各葉に必要な最小サンプル数
+            LearningRate = 0.1, // 学習率
+        };
+
+
         // 学習パイプラインの定義
         var trainingDataView = dataView;
         var pipeline = mlContext.Transforms.Conversion.MapValueToKey("Label")
             .Append(mlContext.Transforms.Concatenate("Features", "Feature1", "Feature2", "Feature3", "Feature4"))
-            .Append(mlContext.MulticlassClassification.Trainers.LightGbm(labelColumnName: "Label", featureColumnName: "Features"))
+            .Append(mlContext.MulticlassClassification.Trainers.LightGbm(options))
             .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
 
         // モデルの学習
