@@ -8,7 +8,7 @@ using Microsoft.ML.Trainers.LightGbm;
 
 
 /*
- linux-arm64はLightGBMを自前でビルドする。
+ *Pi系のSBC(linux-arm64)はLightGBMを自前でビルドする。
  このプロジェクトでNuGetから導入したML.netが使用しているLightGBMはv3系なので、v3.2.1を使用した。
  git clone --recursive https://github.com/microsoft/LightGBM -b v3.2.1 --depth 1
  mkdir LightGBM/build/
