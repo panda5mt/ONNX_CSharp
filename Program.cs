@@ -156,6 +156,10 @@ class Program
 
             Console.WriteLine("Learning end.");
         }
+        else
+        {
+            Console.WriteLine("No CSV FILE!!!");
+        }
     }
 
     static void PrintModelInputNames(string modelPath)
