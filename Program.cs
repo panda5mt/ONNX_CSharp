@@ -89,72 +89,74 @@ class Program
     {
         var mlContext = new MLContext();
         IDataView? dataView;
-
-        // CSVファイルの最初の行を読み込み、列数を取得
-        var firstLine = File.ReadLines(csvPath).First();
-        columnCount = firstLine.Split(',').Length; // カンマで分割して列数を取得
-
-        // TextLoaderを動的に設定
-        var textLoaderColumns = new TextLoader.Column[columnCount];
-        for (int i = 0; i < columnCount - 1; i++)
+        if (File.Exists(csvPath))
         {
-            textLoaderColumns[i] = new TextLoader.Column($"Feature{i}", DataKind.Single, i);
+            // CSVファイルの最初の行を読み込み、列数を取得
+            string firstLine = File.ReadLines(csvPath).First();
+            columnCount = firstLine.Split(',').Length; // カンマで分割して列数を取得
+
+            // TextLoaderを動的に設定
+            var textLoaderColumns = new TextLoader.Column[columnCount];
+            for (int i = 0; i < columnCount - 1; i++)
+            {
+                textLoaderColumns[i] = new TextLoader.Column($"Feature{i}", DataKind.Single, i);
+            }
+            // 最後の列をラベルとして設定
+            textLoaderColumns[columnCount - 1] = new TextLoader.Column("Label", DataKind.Single, columnCount - 1);
+
+            var textLoader = mlContext.Data.CreateTextLoader(new TextLoader.Options
+            {
+                Columns = textLoaderColumns,
+                HasHeader = true,
+                Separators = new[] { ',' }
+            });
+
+            // データのロード
+            try
+            {
+                dataView = textLoader.Load(csvPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            var options = new LightGbmMulticlassTrainer.Options
+            {
+                LabelColumnName = "Label",
+                FeatureColumnName = "Features",
+                MinimumExampleCountPerLeaf = 5,
+                NumberOfLeaves = 31,
+                NumberOfIterations = 100,
+                LearningRate = 0.1,
+                MaximumBinCountPerFeature = 50,
+            };
+
+            // 学習パイプラインの定義
+            // 特徴量列名を動的に生成
+            var featureColumnNames = textLoaderColumns.Take(columnCount - 1).Select(col => col.Name).ToArray();
+            var pipeline = mlContext.Transforms.Conversion.MapValueToKey("Label")
+                .Append(mlContext.Transforms.Concatenate("Features", featureColumnNames))
+                .Append(mlContext.MulticlassClassification.Trainers.LightGbm(options))
+                .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
+
+            // モデルの学習
+            var model = pipeline.Fit(dataView);
+
+            // モデルをONNX形式でエクスポート
+            if (onnxPath != null)
+            {
+                using var stream = File.Create(onnxPath);
+                mlContext.Model.ConvertToOnnx(model, dataView, stream);
+            }
+            else
+            {
+                return;
+            }
+
+            Console.WriteLine("Learning end.");
         }
-        // 最後の列をラベルとして設定
-        textLoaderColumns[columnCount - 1] = new TextLoader.Column("Label", DataKind.Single, columnCount - 1);
-
-        var textLoader = mlContext.Data.CreateTextLoader(new TextLoader.Options
-        {
-            Columns = textLoaderColumns,
-            HasHeader = true,
-            Separators = new[] { ',' }
-        });
-
-        // データのロード
-        try
-        {
-            dataView = textLoader.Load(csvPath);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return;
-        }
-
-        var options = new LightGbmMulticlassTrainer.Options
-        {
-            LabelColumnName = "Label",
-            FeatureColumnName = "Features",
-            MinimumExampleCountPerLeaf = 5,
-            NumberOfLeaves = 31,
-            NumberOfIterations = 100,
-            LearningRate = 0.1,
-            MaximumBinCountPerFeature = 50,
-        };
-
-        // 学習パイプラインの定義
-        // 特徴量列名を動的に生成
-        var featureColumnNames = textLoaderColumns.Take(columnCount - 1).Select(col => col.Name).ToArray();
-        var pipeline = mlContext.Transforms.Conversion.MapValueToKey("Label")
-            .Append(mlContext.Transforms.Concatenate("Features", featureColumnNames))
-            .Append(mlContext.MulticlassClassification.Trainers.LightGbm(options))
-            .Append(mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
-
-        // モデルの学習
-        var model = pipeline.Fit(dataView);
-
-        // モデルをONNX形式でエクスポート
-        if (onnxPath != null)
-        {
-            using var stream = File.Create(onnxPath);
-            mlContext.Model.ConvertToOnnx(model, dataView, stream);
-        }
-        else
-        {
-            return;
-        }
-
-        Console.WriteLine("Learning end.");
     }
 
     static void PrintModelInputNames(string modelPath)
