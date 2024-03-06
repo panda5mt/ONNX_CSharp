@@ -90,9 +90,14 @@ class Program
         {
             LabelColumnName = "Label", // ラベル列の指定
             FeatureColumnName = "Features", // 特徴量列の指定
-            NumberOfLeaves = 31, // num_leaves の設定
+            //NumberOfLeaves = 31, // num_leaves の設定
             MinimumExampleCountPerLeaf = 5, // 各葉に必要な最小サンプル数
+            //LearningRate = 0.1, // 学習率
+            //BinConstructSampleCount = 200000, // bin_construct_sample_cntの値を増やす
+            NumberOfLeaves = 31, // 使用する葉の数
+            NumberOfIterations = 100, // 反復回数
             LearningRate = 0.1, // 学習率
+            MaximumBinCountPerFeature = 50,
         };
 
 
