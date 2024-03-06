@@ -8,10 +8,16 @@ using Microsoft.ML.Trainers.LightGbm;
 
 
 /*
-// LightGBMは自前でビルドする。
-// どうやっても動かない場合、特に
-// The type initializer for 'Microsoft.ML.OnnxRuntime.NativeMethods' threw an exception.
-// みたいなメッセージが出たら下記を実行
+ LightGBMは自前でビルドする。
+ git clone --recursive https://github.com/microsoft/LightGBM -b v3.2.1 --depth 1
+ mkdir LightGBM/build/
+ cd LightGBM/build/
+ cmake ..
+ make -j4
+ cp /path/to/LightGBM/lib_lightgbm.so /path/to/dotnet_proj/runtimes/linux-arm64/native/
+ どうやっても動かない場合、特に
+ The type initializer for 'Microsoft.ML.OnnxRuntime.NativeMethods' threw an exception.
+ みたいなメッセージが出たら下記を実行
 
 dotnet add package Microsoft.ML
 dotnet add package Microsoft.ML.OnnxRuntime
