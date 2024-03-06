@@ -26,36 +26,6 @@ dotnet add package Microsoft.ML.OnnxRuntime
 dotnet add package Microsoft.ML.OnnxTransformer
 */
 
-// データクラスの定義
-public class ModelInput
-{
-    [LoadColumn(0)]
-    public float Feature1;
-
-    [LoadColumn(1)]
-    public float Feature2;
-
-    [LoadColumn(2)]
-    public float Feature3;
-
-    [LoadColumn(3)]
-    public float Feature4;
-
-    [ColumnName("Label")]
-    [LoadColumn(4)]
-    public float Label;
-}
-
-public class ModelOutput
-{
-    [ColumnName("PredictedLabel")]
-    public bool Prediction { get; set; }
-
-    public float Probability { get; set; }
-
-    public float Score { get; set; }
-}
-
 class Program
 {
     static void Main(/*string[] args*/)
