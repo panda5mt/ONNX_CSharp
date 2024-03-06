@@ -78,7 +78,7 @@ class Program
         }
 
         Learning(csvPath, onnxPath);
-        PrintModelInputNames(onnxPath);
+        //PrintModelInputNames(onnxPath);
         Predict(onnxPath);
 
 
@@ -167,7 +167,7 @@ class Program
             Console.WriteLine($"Input Name: {inputMeta.Key}");
         }
     }
-    static void Predict(string? onnxPath/*, float[] featureValues*/)
+    static void Predict(string? onnxPath)
     {
         // ONNXランタイムのセッションを作成
         InferenceSession session;
