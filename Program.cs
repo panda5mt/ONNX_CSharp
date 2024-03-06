@@ -16,7 +16,8 @@ using Microsoft.ML.Trainers.LightGbm;
  cmake ..
  make -j4
  cp /path/to/LightGBM/lib_lightgbm.so /path/to/dotnet_proj/runtimes/linux-arm64/native/
- どうやっても動かない場合、特に
+
+ ビルド後、このプロジェクト起動してlib_lightgbm.soがないというエラー以外、特に
  The type initializer for 'Microsoft.ML.OnnxRuntime.NativeMethods' threw an exception.
  みたいなメッセージが出たら下記を実行
 
