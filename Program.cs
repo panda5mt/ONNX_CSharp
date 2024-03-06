@@ -9,6 +9,7 @@ using Microsoft.ML.Trainers.LightGbm;
 
 /*
  linux-arm64はLightGBMを自前でビルドする。
+ このプロジェクトでNuGetから導入したML.netが使用しているLightGBMはv3系なので、v3.2.1を使用した。
  git clone --recursive https://github.com/microsoft/LightGBM -b v3.2.1 --depth 1
  mkdir LightGBM/build/
  cd LightGBM/build/
@@ -108,8 +109,6 @@ class Program
             FeatureColumnName = "Features", // 特徴量列の指定
             //NumberOfLeaves = 31, // num_leaves の設定
             MinimumExampleCountPerLeaf = 5, // 各葉に必要な最小サンプル数
-            //LearningRate = 0.1, // 学習率
-            //BinConstructSampleCount = 200000, // bin_construct_sample_cntの値を増やす
             NumberOfLeaves = 31, // 使用する葉の数
             NumberOfIterations = 100, // 反復回数
             LearningRate = 0.1, // 学習率
