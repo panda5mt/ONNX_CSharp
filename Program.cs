@@ -78,7 +78,6 @@ class Program
         }
 
         Learning(csvPath, onnxPath);
-        //PrintModelInputNames(onnxPath);
         Predict(onnxPath);
 
 
