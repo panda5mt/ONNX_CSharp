@@ -4,9 +4,7 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 using Microsoft.ML.OnnxRuntime;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.LightGbm;
-using System.ComponentModel.DataAnnotations;
 
 // データクラスの定義
 public class ModelInput
@@ -68,7 +66,7 @@ class Program
     static void Learning(string? csvPath, string? onnxPath)
     {
         // MLContextの作成
-        var mlContext = new MLContext(seed: 0);
+        var mlContext = new MLContext();
         IDataView? dataView;
 
         // データのロード
@@ -134,10 +132,12 @@ class Program
         InferenceSession? session;
         try
         {
-            session = new InferenceSession(onnxPath);
+            var session1 = new InferenceSession(onnxPath);
+            session = session1 as InferenceSession;
         }catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            Console.WriteLine("Error found. return.");
             return;
         }
 
