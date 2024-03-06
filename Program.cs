@@ -6,6 +6,18 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.ML.Trainers.LightGbm;
 
+
+/*
+// LightGBMは自前でビルドする。
+// どうやっても動かない場合、特に
+// The type initializer for 'Microsoft.ML.OnnxRuntime.NativeMethods' threw an exception.
+// みたいなメッセージが出たら下記を実行
+
+dotnet add package Microsoft.ML
+dotnet add package Microsoft.ML.OnnxRuntime
+dotnet add package Microsoft.ML.OnnxTransformer
+*/
+
 // データクラスの定義
 public class ModelInput
 {
