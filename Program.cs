@@ -8,7 +8,7 @@ using Microsoft.ML.Trainers.LightGbm;
 
 
 /*
- LightGBMは自前でビルドする。
+ linux-arm64はLightGBMを自前でビルドする。
  git clone --recursive https://github.com/microsoft/LightGBM -b v3.2.1 --depth 1
  mkdir LightGBM/build/
  cd LightGBM/build/
