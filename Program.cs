@@ -68,7 +68,7 @@ class Program
     static void Learning(string? csvPath, string? onnxPath)
     {
         // MLContextの作成
-        var mlContext = new MLContext();
+        var mlContext = new MLContext(seed: 0);
         IDataView? dataView;
 
         // データのロード
