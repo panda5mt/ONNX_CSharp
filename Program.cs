@@ -9,7 +9,7 @@ using Microsoft.ML.Trainers.LightGbm;
 
 /*
  *Pi系のSBC(linux-arm64)はLightGBMを自前でビルドする。
- このプロジェクトでNuGetから導入したML.netが使用しているLightGBMはv3系なので、v3.0.0を使用した。
+ このプロジェクトでNuGetから導入したML.netが使用しているLightGBMはv3.0.x系なので、v3.0.0を使用した。
  git clone --recursive https://github.com/microsoft/LightGBM -b v3.0.0 --depth 1
  mkdir LightGBM/build/
  cd LightGBM/build/
@@ -32,22 +32,27 @@ class Program
     {
         string? onnxPath, csvPath;
         string? csvName = "record.csv";
+        string? onnxName = "model.onnx";
      
         string pwd_folder = System.Environment.CurrentDirectory;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && Debugger.IsAttached) // Visual Studioでデバッグ中か判断
         {
-            onnxPath = Path.Combine(pwd_folder, "../../../model.onnx");
+            onnxPath = Path.Combine(pwd_folder, "../../../" + onnxName);
             csvPath = Path.Combine(pwd_folder, "../../../" + csvName);
 
         }
         else
         {
-            onnxPath = Path.Combine(pwd_folder, "model.onnx");
+            onnxPath = Path.Combine(pwd_folder, onnxName);
             csvPath = Path.Combine(pwd_folder, csvName);
         }
 
         Learning(csvPath, onnxPath);
+        Console.WriteLine($"---------------------");
+        
+        //PrintModelInputNames(onnxPath);
+        //Console.WriteLine($"---------------------");
         Predict(onnxPath);
 
 
@@ -95,7 +100,7 @@ class Program
             {
                 LabelColumnName = "Label",
                 FeatureColumnName = "Features",
-                MinimumExampleCountPerLeaf = 5,
+                MinimumExampleCountPerLeaf = 32,
                 NumberOfLeaves = 31,
                 NumberOfIterations = 100,
                 LearningRate = 0.1,
